@@ -1,12 +1,23 @@
 package de.pixelskull.pixasearch.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
+import com.squareup.picasso.Picasso
 import de.pixelskull.pixasearch.model.SearchResult
 import de.pixelskull.pixasearch.R
+import de.pixelskull.pixasearch.databinding.FragmentDetailBinding
+import de.pixelskull.pixasearch.databinding.FragmentSearchBinding
+import de.pixelskull.pixasearch.viewmodel.DetailFragmentModel
+import de.pixelskull.pixasearch.viewmodel.SearchFragmentModel
+import org.w3c.dom.Text
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "searchResult"
@@ -18,38 +29,47 @@ private const val ARG_PARAM1 = "searchResult"
  */
 class DetailFragment : Fragment() {
 
-    private var searchResult: SearchResult? = null
+    private lateinit var detailModel: DetailFragmentModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            searchResult = it.getSerializable(ARG_PARAM1) as SearchResult?
-        }
-    }
+    private lateinit var imageView: ImageView
+    private lateinit var downloadsView: TextView
+    private lateinit var commentsView: TextView
+    private lateinit var likesView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail, container, false)
+        detailModel = ViewModelProvider(this).get(DetailFragmentModel::class.java)
+        val binding: FragmentDetailBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false)
+        binding.lifecycleOwner = this
+        binding.detailModel = detailModel
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param searchResult
-         * @return A new instance of fragment DetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(searchResult: SearchResult) =
-            DetailFragment().apply {
-                arguments = Bundle().apply {
-                    putSerializable(ARG_PARAM1, searchResult)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (arguments != null) {
+            val arg = arguments
+            val args = DetailFragmentArgs.fromBundle(arg!!)
+            detailModel.searchResult.value = args.displayedResult
+
+            Log.d("RESULT:", detailModel.searchResult.value!!.user)
+        }
+
+        imageView = view.findViewById(R.id.detail_imageview)
+        downloadsView = view.findViewById(R.id.detail_downloads)
+        commentsView = view.findViewById(R.id.detail_comments)
+        likesView = view.findViewById(R.id.detail_likes)
+
+        Picasso.get()
+            .load(detailModel.searchResult.value?.largeImageURL)
+            .into(imageView)
+
+        downloadsView.text = "Downloads: " + detailModel.searchResult.value?.downloads.toString()
+        commentsView.text = "Comments: " + detailModel.searchResult.value?.comments.toString()
+        likesView.text = "Likes: " + detailModel.searchResult.value?.likes.toString()
     }
 }

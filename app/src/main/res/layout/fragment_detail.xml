@@ -1,14 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="fragments.DetailFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="DetailFragment" />
+    <data>
+        <variable
+            name="detailModel"
+            type="de.pixelskull.pixasearch.viewmodel.DetailFragmentModel" />
+    </data>
 
-</FrameLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="fragments.DetailFragment">
+            <ImageView
+                android:id="@+id/detail_imageview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginBottom="50dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@{detailModel.searchResult.largeImageURL}" />
+            <TextView
+                android:id="@+id/detail_downloads"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="40dp"
+                android:paddingEnd="10dp"
+                android:textColor="@color/design_default_color_primary"
+                app:layout_constraintTop_toBottomOf="@id/detail_imageview"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+                android:id="@+id/detail_comments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textColor="@color/design_default_color_primary"
+                app:layout_constraintTop_toBottomOf="@id/detail_imageview"
+                app:layout_constraintStart_toEndOf="@id/detail_downloads"/>
+            <TextView
+                android:id="@+id/detail_likes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="40dp"
+                android:textColor="@color/design_default_color_primary"
+                app:layout_constraintTop_toBottomOf="@id/detail_imageview"
+                app:layout_constraintStart_toEndOf="@id/detail_comments"
+                app:layout_constraintEnd_toEndOf="parent"/>
+            <TextView
+                android:id="@+id/detail_username_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="40dp"
+                android:paddingEnd="40dp"
+                android:layout_marginBottom="30dp"
+                app:layout_constraintTop_toBottomOf="@id/detail_downloads"
+                android:text="@{detailModel.searchResult.user}"
+                android:textSize="20sp"
+                android:textColor="@color/design_default_color_secondary"/>
+                <TextView
+                    android:id="@+id/detail_tag_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="40dp"
+                    app:layout_constraintTop_toBottomOf="@id/detail_username_textview"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="Tags:"/>
+            <TextView
+                android:id="@+id/detail_tags_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="40dp"
+                android:paddingEnd="40dp"
+                app:layout_constraintTop_toBottomOf="@id/detail_tag_title"
+                android:text="@{detailModel.searchResult.tags}"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+
+</layout>

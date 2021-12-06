@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,6 @@ import de.pixelskull.pixasearch.adapter.SearchListAdapter
 import de.pixelskull.pixasearch.databinding.FragmentSearchBinding
 import de.pixelskull.pixasearch.model.SearchResult
 import de.pixelskull.pixasearch.viewmodel.SearchFragmentModel
-import kotlinx.coroutines.GlobalScope
 
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -40,21 +38,13 @@ class SearchFragment : Fragment() {
             }
     }
 
-    private var param1: String? = null
     private var data: List<SearchResult> = listOf()
 
-    private lateinit var searchModel: SearchFragmentModel
+    private var searchModel: SearchFragmentModel? = null
 
     private lateinit var searchView: FloatingSearchView
-    private lateinit var searchRecylerView: RecyclerView
+    private lateinit var searchRecyclerView: RecyclerView
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,11 +53,11 @@ class SearchFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         searchModel = ViewModelProvider(this).get(SearchFragmentModel::class.java)
-        searchModel.searchResults.observe(viewLifecycleOwner, Observer {
+        searchModel?.searchResults?.observe(viewLifecycleOwner, Observer {
             if (it.hits.isNotEmpty()) {
                 Log.d("SEARCHRESULT:", it.hits.first().user)
                 data = it.hits
-                searchRecylerView.adapter = SearchListAdapter(data)
+                searchRecyclerView.adapter = SearchListAdapter(data)
             }
         })
 
@@ -81,18 +71,18 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         searchView = view.findViewById(R.id.floating_search_view)
-        searchRecylerView = view.findViewById(R.id.search_list_recyclerview)
-        searchRecylerView.adapter = SearchListAdapter(data)
-        searchRecylerView.layoutManager = LinearLayoutManager(context)
+        searchRecyclerView = view.findViewById(R.id.search_list_recyclerview)
+        searchRecyclerView.adapter = SearchListAdapter(data)
+        searchRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        searchModel.setSearchTerm("fruits") // Default Search
+        searchModel?.setSearchTerm("fruits") // Default Search
         // using search
-        searchView.setOnQueryChangeListener { _, newQuery -> searchModel.setSearchTerm(newQuery) }
-        searchView.setOnClearSearchActionListener { searchModel.setSearchTerm("fruits") } // revert to default
+        searchView.setOnQueryChangeListener { _, newQuery -> searchModel?.setSearchTerm(newQuery) }
+        searchView.setOnClearSearchActionListener { searchModel?.setSearchTerm("fruits") } // revert to default
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        searchModel.cancelJobs()
+        searchModel?.cancelJobs()
     }
 }

@@ -11,6 +11,6 @@ class SearchResult: Serializable {
     val downloads: Int          = 0
     val comments: Int           = 0
     val previewURL: String      = ""
-    val userImageURL: String    = ""
+    val largeImageURL: String   = ""
 
 }
