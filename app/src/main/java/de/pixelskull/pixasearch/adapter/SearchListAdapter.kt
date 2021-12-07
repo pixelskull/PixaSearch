@@ -1,5 +1,6 @@
 package de.pixelskull.pixasearch.adapter
 
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,10 +39,10 @@ class SearchListAdapter(private val mList: List<SearchResult>) : RecyclerView.Ad
         holder.userTextView.text = searchResult.user
         holder.imageTagView.text = searchResult.tags
 
-        holder.itemView.setOnClickListener {
-            val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(searchResult)
-            Navigation.findNavController(holder.itemView).navigate(action)
-        }
+//        holder.itemView.setOnClickListener {
+//            val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(searchResult)
+//            Navigation.findNavController(holder.itemView).navigate(action)
+//        }
     }
 
     override fun getItemCount(): Int { return mList.count() }

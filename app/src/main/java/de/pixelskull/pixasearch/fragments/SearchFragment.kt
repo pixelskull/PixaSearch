@@ -1,5 +1,7 @@
 package de.pixelskull.pixasearch.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,42 +11,24 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.arlib.floatingsearchview.FloatingSearchView
 import de.pixelskull.pixasearch.R
 import de.pixelskull.pixasearch.adapter.SearchListAdapter
 import de.pixelskull.pixasearch.databinding.FragmentSearchBinding
+import de.pixelskull.pixasearch.extensions.OnItemClickListener
+import de.pixelskull.pixasearch.extensions.addOnItemClickListener
+
 import de.pixelskull.pixasearch.model.SearchResult
 import de.pixelskull.pixasearch.viewmodel.SearchFragmentModel
 
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SearchFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SearchFragment : Fragment() {
-
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                }
-            }
-    }
-
     private var data: List<SearchResult> = listOf()
-
     private var searchModel: SearchFragmentModel? = null
-
     private lateinit var searchView: FloatingSearchView
     private lateinit var searchRecyclerView: RecyclerView
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +58,23 @@ class SearchFragment : Fragment() {
         searchRecyclerView = view.findViewById(R.id.search_list_recyclerview)
         searchRecyclerView.adapter = SearchListAdapter(data)
         searchRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        searchRecyclerView.addOnItemClickListener(object: OnItemClickListener {
+            override fun onItemClicked(position: Int, view: View) {
+                val toShow = searchModel?.searchResults?.value?.hits?.get(position)
+                val dialog = AlertDialog.Builder(context)
+                    .setMessage("Do you want to see more infos?")
+                    .setPositiveButton("Open!") { _, _ ->
+                        toShow?.let {
+                            val action = SearchFragmentDirections.actionSearchFragmentToDetailFragment(it)
+                            Navigation.findNavController(view).navigate(action)
+                        }
+                    }
+                    .setCancelable(true)
+                    .create()
+                dialog.show()
+            }
+        })
 
         searchModel?.setSearchTerm("fruits") // Default Search
         // using search

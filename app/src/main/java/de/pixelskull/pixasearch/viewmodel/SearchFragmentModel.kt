@@ -17,9 +17,7 @@ class SearchFragmentModel: ViewModel() {
     }
 
     fun setSearchTerm(newSearchTerm: String) {
-        if (_searchTerm.value == newSearchTerm) {
-            return
-        }
+        if (_searchTerm.value == newSearchTerm) { return }
         _searchTerm.value = newSearchTerm
     }
 
