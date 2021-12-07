@@ -4,9 +4,7 @@ import android.app.Application
 
 class PixaApp : Application() {
 
-    init {
-        instance = this
-    }
+    init { instance = this }
 
     companion object {
         private var instance: PixaApp? = null

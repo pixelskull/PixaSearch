@@ -23,12 +23,12 @@ object SearchRepository {
                         withContext(Main) {
                             value = search
                             currentJob.complete()
-                        }
-                    }
-                }
-            }
-        }
-    }
+                        } // look
+                    } // at
+                } // this
+            } // pyramid
+        } // of
+    } // doom
 
     fun cancelJobs() {
         job?.cancel()
